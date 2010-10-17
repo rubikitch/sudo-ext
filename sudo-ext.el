@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2010-10-17 21:19:12 rubikitch>
+;; Time-stamp: <2010-10-17 21:20:06 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -145,7 +145,7 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 ;;; Disable it because `shell-command-to-string' is too low-level function.
 ;;; If internally used shell command contains a string `sudo',
 ;;; password prompt may be appeared. It disturbs commands like `anything'.
-;; (sudo-advice shell-command-to-string)
+;; (sudo-advice shell-command-to-string 0)
 
 (provide 'sudo-ext)
 
