@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- minimal sudo wrapper
-;; Time-stamp: <2010-10-17 12:02:55 rubikitch>
+;; Time-stamp: <2010-10-17 12:08:04 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -127,7 +127,7 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 ;; (shell-command "sudo sh -c 'echo $USER'")
 ;; (async-shell-command "sudo sh -c 'echo $USER'")
 (sudo-advice shell-command)
-(sudo-advice async-shell-command)
+(sudo-advice shell-command-on-region)
 (sudo-advice shell-command-to-string)
 (sudo-advice compilation-start)
 
