@@ -131,17 +131,17 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 ;; (sudoedit "/etc/fstab")
 ;; (sudo-K)
 
-(defmacro sudo-advice (func)
-  "Activate advice to make FUNC sudo-awared."
+(defmacro sudo-advice (func argpos)
+  "Activate advice to make FUNC sudo-awared. ARGPOS is command position."
   `(defadvice ,func (before sudo-advice activate)
-     (when (string-match "\\bsudo\\b" (ad-get-arg 0))
+     (when (string-match "\\bsudo\\b" (ad-get-arg ,argpos))
        (sudo-v))))
 ;; (sudo-K)
 ;; (shell-command "sudo sh -c 'echo $USER'")
 ;; (async-shell-command "sudo sh -c 'echo $USER'")
-(sudo-advice shell-command)
-(sudo-advice shell-command-on-region)
-(sudo-advice compilation-start)
+(sudo-advice shell-command 0)
+(sudo-advice shell-command-on-region 2)
+(sudo-advice compilation-start 0)
 ;;; Disable it because `shell-command-to-string' is too low-level function.
 ;;; If internally used shell command contains a string `sudo',
 ;;; password prompt may be appeared. It disturbs commands like `anything'.
