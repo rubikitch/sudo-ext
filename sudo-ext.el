@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2010-10-17 21:20:06 rubikitch>
+;; Time-stamp: <2010-10-17 21:33:46 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -122,12 +122,25 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
   (interactive)
   (call-process "sudo" nil nil nil "-K"))
 
+(defun sudoedit-editor ()
+  (cond ((and (fboundp 'server-running-p)
+              (server-running-p))
+         "emacsclient")
+        ((and (fboundp 'gnuserv-running-p)
+              (gnuserv-running-p))
+         "gnuclient")
+        (t
+         (error (substitute-command-keys "Not running server. Start server by \\[server-start] or \\[gnuserv-start]")))))
+
 (defun sudoedit (file)
   "Run `sudoedit FILE' to edit FILE as root."
   (interactive "fSudoedit: ")
   (sudo-wrapper (file)
-    (start-process "sudoedit" (get-buffer-create " *sudoedit*")
-                   "sudoedit" file)))
+    (let ((process-environment (copy-sequence process-environment)))
+      (setenv "EDITOR" (sudoedit-editor))
+      (setenv "VISUAL" (sudoedit-editor))
+      (start-process "sudoedit" (get-buffer-create " *sudoedit*")
+                    "sudoedit" file))))
 ;; (sudoedit "/etc/fstab")
 ;; (sudo-K)
 
