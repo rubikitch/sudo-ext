@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- minimal sudo wrapper
-;; Time-stamp: <2010-10-17 12:08:04 rubikitch>
+;; Time-stamp: <2010-10-17 20:41:41 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -128,8 +128,11 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 ;; (async-shell-command "sudo sh -c 'echo $USER'")
 (sudo-advice shell-command)
 (sudo-advice shell-command-on-region)
-(sudo-advice shell-command-to-string)
 (sudo-advice compilation-start)
+;;; Disable it because `shell-command-to-string' is too low-level function.
+;;; If internally used shell command contains a string `sudo',
+;;; password prompt may be appeared. It disturbs commands like `anything'.
+;; (sudo-advice shell-command-to-string)
 
 (provide 'sudo-ext)
 
