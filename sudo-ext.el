@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- minimal sudo wrapper
-;; Time-stamp: <2010-10-16 12:49:17 rubikitch>
+;; Time-stamp: <2010-10-17 11:56:06 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -30,6 +30,10 @@
 ;;
 ;; Below are complete command list:
 ;;
+;;  `sudo-K'
+;;    Run `sudo -K'.
+;;  `sudoedit'
+;;    Run `sudoedit FILE' to edit FILE as root.
 ;;
 ;;; Customizable Options:
 ;;
@@ -85,6 +89,7 @@
           (sit-for 0.01))
         return-value))))
 (defun sudo-v ()
+  "Run `sudo -v'. Maybe requires password."
   (sudo-internal 'ignore))
 
 (defun sudo-v-process-filter (proc string)
@@ -92,16 +97,20 @@
     (process-send-string proc (concat (read-passwd "Sudo Password: ") "\n"))))
 
 (defmacro sudo-wrapper (args &rest body)
+  "Run `sudo -v' then execute BODY. ARGS are variables to pass to body.
+Because BODY is executed as asynchronous function, ARGS should be lexically bound."
   `(lexical-let ,(mapcar (lambda (arg) (list arg arg)) args)
      (sudo-internal
       (lambda () ,@body))))
 (put 'sudo-wrapper 'lisp-indent-function 1)
 
 (defun sudo-K ()
+  "Run `sudo -K'."
   (interactive)
   (shell-command-to-string "sudo -K"))
 
 (defun sudoedit (file)
+  "Run `sudoedit FILE' to edit FILE as root."
   (interactive "fSudoedit: ")
   (sudo-wrapper (file)
     (start-process "sudoedit" (get-buffer-create " *sudoedit*")
@@ -110,6 +119,7 @@
 ;; (sudo-K)
 
 (defmacro sudo-advice (func)
+  "Activate advice to make FUNC sudo-awared."
   `(defadvice ,func (before sudo-advice activate)
      (when (string-match "\\bsudo\\b" (ad-get-arg 0))
        (sudo-v))))
