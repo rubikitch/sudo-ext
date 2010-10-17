@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- minimal sudo wrapper
-;; Time-stamp: <2010-10-17 11:56:06 rubikitch>
+;; Time-stamp: <2010-10-17 12:02:55 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -107,7 +107,7 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 (defun sudo-K ()
   "Run `sudo -K'."
   (interactive)
-  (shell-command-to-string "sudo -K"))
+  (call-process "sudo" nil nil nil "-K"))
 
 (defun sudoedit (file)
   "Run `sudoedit FILE' to edit FILE as root."
@@ -128,6 +128,8 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 ;; (async-shell-command "sudo sh -c 'echo $USER'")
 (sudo-advice shell-command)
 (sudo-advice async-shell-command)
+(sudo-advice shell-command-to-string)
+(sudo-advice compilation-start)
 
 (provide 'sudo-ext)
 
